@@ -1,6 +1,7 @@
 ﻿#ifndef __POSTFIX_H__
 #define __POSTFIX_H__
 #include<deque>
+#include <math.h>
 #include <string>
 #include "stack.h"
 #include "vector"
@@ -21,9 +22,12 @@ public:
             switch(*i){
 
                 case '(':
+                    if(s == "sin" || s == "cos" || s == "tg") {
+                        operators.Push(s);
+                        s = "";
+                    }
                     operators.Push("(");
                     break;
-
                 case ')':
                     if(s != ""){
                         vcalc.push_back(s);
@@ -33,7 +37,14 @@ public:
                         if(operators.top() != "("){
                             vcalc.push_back(operators.pop());
                         }
-                        else break;
+                        else{ 
+                            break;
+                        }
+                    }
+                    if(!operators.empty()){
+                        if(operators.top() =="sin" || operators.top() =="tg" || operators.top() =="cos"){
+                            vcalc.push_back(operators.pop());
+                        }
                     }
                     if(!operators.empty()){
                         operators.pop();
@@ -47,7 +58,7 @@ public:
                         s = "";
                     }
                     while(!operators.empty()){
-                        if(operators.top() == "*" || operators.top() == "/" || operators.top() == "+" || operators.top() == "-")
+                        if(operators.top() == "*" || operators.top() == "/" || operators.top() == "+" || operators.top() == "-" || operators.top() == "sin" || operators.top() == "cos" || operators.top() == "tg")
                             vcalc.push_back(operators.pop());
                         else break;
                     }
@@ -60,7 +71,7 @@ public:
                         s = "";
                     }
                     while(!operators.empty()){
-                        if(operators.top() == "*" || operators.top() == "/" || operators.top() == "+" || operators.top() == "-")
+                        if(operators.top() == "*" || operators.top() == "/" || operators.top() == "+" || operators.top() == "-"|| operators.top() == "sin" || operators.top() == "cos" || operators.top() == "tg")
                             vcalc.push_back(operators.pop());
                         else break;
                     }
@@ -72,7 +83,7 @@ public:
                         s = "";
                     }
                     while(!operators.empty()){
-                        if(operators.top() == "*" || operators.top() == "/")
+                        if(operators.top() == "*" || operators.top() == "/"|| operators.top() == "sin" || operators.top() == "cos" || operators.top() == "tg")
                             vcalc.push_back(operators.pop());
                         else break;
                     }
@@ -85,7 +96,7 @@ public:
                         s = "";
                     }
                     while(!operators.empty()){
-                        if(operators.top() == "*" || operators.top() == "/")
+                        if(operators.top() == "*" || operators.top() == "/"|| operators.top() == "sin" || operators.top() == "cos" || operators.top() == "tg")
                             vcalc.push_back(operators.pop());
                         else break;
                     }
@@ -94,7 +105,7 @@ public:
                 case ' ':
                     break;
                 default:
-                    if(*i - '0' < 10 && *i - '0' >= 0){
+                    if(1){
                         s += *i;
                         break;
                     }
@@ -116,9 +127,10 @@ public:
         Stack<double>ans;
 
         for(auto i:vcalc){
-            if(i != "+" && i != "-" && i != "*" && i != "/")
+            if(i != "+" && i != "-" && i != "*" && i != "/" && i != "sin" && i != "cos" && i != "tg")
                 ans.Push(std::stod(i));
             else{
+                if(i == "+" || i == "-" || i == "*" || i == "/"){
                 double y = ans.pop();
                 double x = ans.pop();
                 if(i == "+"){
@@ -137,6 +149,22 @@ public:
                     x = x * y;
                     ans.Push(x);
                 }
+            }
+            else{
+                double x = ans.pop();
+                if(i == "sin"){
+                    x = std::sin(x);
+                    ans.Push(x);
+                }
+                if(i == "cos"){
+                    x = std::cos(x);
+                    ans.Push(x);
+                }
+                if(i == "tg"){
+                    x = std::tan(x);
+                    ans.Push(x);
+                }
+            }
             }
         }
         return ans.pop();
